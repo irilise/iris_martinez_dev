@@ -2,7 +2,6 @@ use leptos::prelude::*;
 /// Renders the "What I do for money" page.
 #[component]
 pub fn WorkAbout() -> impl IntoView {
-    // Toggles the embedded PDF viewer. (Placeholder — wiring not implemented yet.)
     let (show_resume, set_show_resume) = signal(false);
 
     view! {
@@ -54,55 +53,6 @@ pub fn WorkAbout() -> impl IntoView {
                             </ul>
                         </div>
 
-                        // What I'm looking for
-                        <div class="text-zinc-900 dark:text-zinc-100 mt-10">
-                            <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-3">
-                                "What I'm looking for"
-                            </h2>
-                            <p class="text-xl font-light">
-                                ""
-                            </p>
-                        </div>
-
-                        // Resume
-                        <div class="text-zinc-900 dark:text-zinc-100 mt-10">
-                            <h2 class="text-sm uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-3">
-                                "Resume"
-                            </h2>
-                            <div class="flex flex-wrap items-center gap-3">
-                                <button
-                                    type="button"
-                                    on:click=move |_| set_show_resume.update(|v| *v = !*v)
-                                    class="inline-flex items-center rounded bg-teal-600 text-white px-4 py-2 text-base font-medium origin-center transition-transform hover:scale-105 dark:bg-teal-500 dark:text-zinc-900"
-                                >
-                                    {move || {
-                                        if show_resume.get() {
-                                            "Hide PDF".to_string()
-                                        } else {
-                                            "View PDF".to_string()
-                                        }
-                                    }}
-                                </button>
-                                <a
-                                    href="/resume.pdf"
-                                    download
-                                    class="inline-flex items-center rounded border border-teal-600 text-teal-700 px-4 py-2 text-base font-medium origin-center transition-transform hover:scale-105 dark:border-teal-200 dark:text-teal-200"
-                                >
-                                    "Download"
-                                </a>
-                            </div>
-                            // Embedded PDF viewer (placeholder — not wired up yet).
-                            // Rendered conditionally: `class:(...)` isn't supported on
-                            // self-closing void elements like `<iframe>` in this version.
-                            {move || show_resume.get().then(|| view! {
-                                <iframe
-                                    class="w-full h-96 mt-4 rounded border border-zinc-300 dark:border-zinc-700 bg-white"
-                                    title="Iris Martinez — Résumé"
-                                    src="/resume.pdf"
-                                />
-                            })}
-                        </div>
-
                         // Connect — professional social links
                         <div class="text-zinc-900 dark:text-zinc-100 mt-10">
                             <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-3">
@@ -130,6 +80,28 @@ pub fn WorkAbout() -> impl IntoView {
                             </ul>
                         </div>
                     </div>
+                </div>
+                // Resume — full-width section at the bottom
+                <div class="text-zinc-900 dark:text-zinc-100 pb-12">
+                    <h2 class="text-sm uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-3">
+                        "Resume"
+                    </h2>
+                    <button
+                        type="button"
+                        aria-expanded=move || show_resume.get().to_string()
+                        on:click=move |_| set_show_resume.update(|v| *v = !*v)
+                        class="inline-flex items-center gap-2 rounded bg-teal-600 text-white px-4 py-2 text-base font-medium origin-center transition-transform hover:scale-105 dark:bg-teal-500 dark:text-zinc-900"
+                    >
+                        <span>{move || if show_resume.get() { "▾" } else { "▸" }}</span>
+                        {move || if show_resume.get() { "Hide resume" } else { "View resume" }}
+                    </button>
+                    {move || show_resume.get().then(|| view! {
+                        <iframe
+                            class="w-full h-[85vh] mt-4 rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:invert dark:hue-rotate-180"
+                            title="Iris Martinez — Résumé"
+                            src="/resume.pdf#toolbar=0&navpanes=0"
+                        />
+                    })}
                 </div>
             </div>
         </div>
